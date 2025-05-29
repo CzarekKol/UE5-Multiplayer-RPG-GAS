@@ -11,8 +11,6 @@ UAuraAttributeSet::UAuraAttributeSet()
 {
 	InitHealth(75.f);
 	InitMana(100.f);
-	InitMaxHealth(100.f);
-	InitMaxMana(100.f);
 }
 
 //Life Replication Setup
