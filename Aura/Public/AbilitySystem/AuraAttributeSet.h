@@ -67,6 +67,8 @@ public:
 
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
+	TMap<FGameplayTag, FGameplayAttribute(*)()> TagsToAttributes;
+
 	/*
 	* 
 	* Vital Attributes
