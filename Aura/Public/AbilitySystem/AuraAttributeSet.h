@@ -183,6 +183,32 @@ public:
 	UFUNCTION()
 	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration);
 
+	/*
+	* Resistance Attributes
+	*/
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_FireResistance, Category = "Resistance Attributes")
+	FGameplayAttributeData FireResistance;
+	UFUNCTION()
+	void OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_LightningResistance, Category = "Resistance Attributes")
+	FGameplayAttributeData LightningResistance;
+	UFUNCTION()
+	void OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ArcaneResistance, Category = "Resistance Attributes")
+	FGameplayAttributeData ArcaneResistance;
+	UFUNCTION()
+	void OnRep_ArcaneResistance(const FGameplayAttributeData& OldArcaneResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_PhysicalResistance, Category = "Resistance Attributes")
+	FGameplayAttributeData PhysicalResistance;
+	UFUNCTION()
+	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance);
+
+
+
 	//init accesor functions (not that important in future)
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
@@ -200,6 +226,11 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, FireResistance);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, LightningResistance);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArcaneResistance);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PhysicalResistance);
+
 
 private:
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props);

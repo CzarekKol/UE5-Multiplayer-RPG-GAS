@@ -8,6 +8,10 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AI/AuraAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AAuraEnemy::AAuraEnemy()
 {
@@ -21,6 +25,25 @@ AAuraEnemy::AAuraEnemy()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+}
+
+void AAuraEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!HasAuthority()) return;
+	AuraAIController = Cast<AAuraAIController>(NewController);
+
+	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	AuraAIController->RunBehaviorTree(BehaviorTree);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
 void AAuraEnemy::HighLightActor()
@@ -54,7 +77,10 @@ void AAuraEnemy::BeginPlay()
 	Super::BeginPlay();
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	InitAbilityActorInfo();
-	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	if (HasAuthority())
+	{
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	}
 
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
@@ -92,6 +118,7 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallBackTag, int32 NewCou
 {
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
 	
 }
 
@@ -99,8 +126,10 @@ void AAuraEnemy::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
-
-	InitializeDefaultAttributes();
+	if (HasAuthority()) 
+	{
+		InitializeDefaultAttributes();
+	}
 }
 
 void AAuraEnemy::InitializeDefaultAttributes() const
