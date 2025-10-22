@@ -168,11 +168,19 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			}
 			if (Props.SourceCharacter != Props.TargetCharacter)
 			{
-				AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller);
-
 				const bool bBlock = UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
 				const bool bCrit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
-				if (PC) PC->ShowDamageNumber(LocalIncomingDamage, Props.TargetCharacter, bBlock, bCrit);
+
+				if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller))
+				{
+					PC->ShowDamageNumber(LocalIncomingDamage, Props.TargetCharacter, bBlock, bCrit);
+					return;
+				}
+				if (AAuraPlayerController * PC = Cast<AAuraPlayerController>(Props.TargetCharacter->Controller))
+				{
+					PC->ShowDamageNumber(LocalIncomingDamage, Props.TargetCharacter, bBlock, bCrit);
+				}
+
 			}
 
 		}
