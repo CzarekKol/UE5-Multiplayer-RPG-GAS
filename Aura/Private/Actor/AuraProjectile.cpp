@@ -10,6 +10,7 @@
 #include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 AAuraProjectile::AAuraProjectile()
 {
@@ -57,6 +58,10 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	{
 		return;
 	}
+
+	bool const bIsNotFriend = UAuraAbilitySystemLibrary::IsNotFriend(DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), OtherActor);
+	if (!bIsNotFriend) return;
+
 	if (!bHit)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, HitResult.Location, FRotator::ZeroRotator);
