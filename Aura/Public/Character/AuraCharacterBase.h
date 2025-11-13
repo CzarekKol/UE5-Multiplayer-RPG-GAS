@@ -40,6 +40,7 @@ public:
 	virtual void Die() override;
 	virtual TArray<FTaggedMontage> GetAttackMotages_Implementation() override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
+	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
 	/* end Combat Interface */
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
